@@ -1,4 +1,68 @@
-!function(){"use strict";function e(e){if(e)return Array.isArray(e)?e:String(e).split(",").map(e=>e.trim()).filter(Boolean)}function t(e){if(e)try{return JSON.parse(e)}catch{return}}let r=document.currentScript,a={queryParam:r&&r.dataset.queryParam||"query",storageKey:r&&r.dataset.storageKey||"",autoSubmit:"true"===(r&&r.dataset.autoSubmit)};function n(){document.querySelectorAll(".smart-askai").forEach(e=>{e.style.setProperty("--surface-color",function e(t){let r=t;for(;r;){let a=getComputedStyle(r).backgroundColor;if(a&&"transparent"!==a&&"rgba(0, 0, 0, 0)"!==a)return a;r=r.parentElement}return getComputedStyle(document.body).backgroundColor||"#fff"}(e))})}function i(){document.querySelectorAll(".smart-askai").forEach(e=>{e.style.setProperty("--blur-height","none"),e.style.setProperty("max-height","none")}),document.querySelectorAll(".smart-show-more")[0].style.display="none"}!function e(t){let r=document.createElement("link");r.rel="stylesheet",r.href=t,document.head.appendChild(r)}("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");let o=`
+/*
+ * Drop this file on any site, add a <div data-askai ...></div>, and include this script.
+ */
+
+(function () {
+    'use strict';
+
+    function $(sel, root) { return (root || document).querySelector(sel); }
+    function $all(sel, root) { return Array.from((root || document).querySelectorAll(sel)); }
+    function parseList(val) {
+        if (!val) return undefined;
+        if (Array.isArray(val)) return val;
+        return String(val).split(',').map(s => s.trim()).filter(Boolean);
+    }
+    function parseJSON(val) {
+        if (!val) return undefined;
+        try { return JSON.parse(val); } catch { return undefined; }
+    }
+
+    // Get defaults from the <script> tag (so you can set data-endpoint on the script once for the whole page)
+    const currentScript = document.currentScript;
+    const globalDefaults = {
+        queryParam: (currentScript && currentScript.dataset.queryParam) || 'query',
+        storageKey: (currentScript && currentScript.dataset.storageKey) || '', // e.g., 'askai_q' to persist between pages
+        autoSubmit: (currentScript && currentScript.dataset.autoSubmit) === 'true',
+    };
+
+    // Find first non-transparent background color up the DOM tree
+    function getNearestSurfaceColor(el) {
+        let n = el;
+        while (n) {
+            const bg = getComputedStyle(n).backgroundColor;
+            if (bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)') return bg;
+            n = n.parentElement;
+        }
+        // fallback to body or white
+        return getComputedStyle(document.body).backgroundColor || '#fff';
+    }
+
+    function applySurfaceColors() {
+        document.querySelectorAll('.smart-askai').forEach(el => {
+            el.style.setProperty('--surface-color', getNearestSurfaceColor(el));
+        });
+    }
+
+    function showMoreText() {
+        document.querySelectorAll('.smart-askai').forEach(el => {
+            el.style.setProperty('--blur-height', 'none');
+            el.style.setProperty('max-height', 'none');
+        });
+        var showMore = document.querySelectorAll('.smart-show-more');
+        showMore[0].style.display = 'none';
+    }
+
+    function loadIconLibrary(cdnUrl) {
+        const linkElement = document.createElement('link');
+        linkElement.rel = 'stylesheet';
+        linkElement.href = cdnUrl;
+        document.head.appendChild(linkElement);
+    }
+
+    loadIconLibrary('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css');
+
+    // Stlying
+    const CSS = `
     .smart-askai{
         --clip: 200px;
         --blur-height: 215px;
@@ -97,4 +161,261 @@
     
     .initial-state{opacity:0;transform:translateY(20px)}
     .final-state{opacity:1;transform:translateY(0);transition:opacity 0.5s ease-out, transform 0.5s ease-out;}
-  `;function s(){if(document.querySelector("#askai-widget-styles"))return;let e=document.createElement("style");e.id="askai-widget-styles",e.textContent=o,document.head.appendChild(e)}function l(e){let t={queryParam:e.dataset.queryParam||a.queryParam,storageKey:e.dataset.storageKey||a.storageKey,autoSubmit:"true"===(e.dataset.autoSubmit||(a.autoSubmit?"true":"false")),inputSelector:e.dataset.inputSelector||a.inputSelector,buttonSelector:e.dataset.buttonSelector||a.buttonSelector,formSelector:e.dataset.formSelector||a.formSelector,outputSelector:e.dataset.outputSelector||a.outputSelector,buttonText:e.dataset.buttonText||a.buttonText,preventDefault:"true"===(e.dataset.preventDefault||(a.preventDefault?"true":"false")),apiKey:e.dataset.apiKey||a.apiKey};async function r(e){let r={query:e,format:"html",conversationId:t.conversationId,apiKey:t.apiKey},a=await fetch("https://api.ai12z.net/bot/askai",{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${r.apiKey}`},body:JSON.stringify(r)}),n=await a.json().catch(()=>({}));if(!a.ok)throw Error(n&&(n.error||n.message)||a.statusText||"Request failed");let i="";i="string"==typeof n?n:n.answer?n.answer:n.content?n.content:n.output?n.output:n.result?n.result:JSON.stringify(n,null,2);var o=n.context;return{answer:n.answer,itemOne:o[0].metadata,itemTwo:o[2].metadata,itemThree:o[4].metadata}}t.shadow&&e.attachShadow({mode:"open"});let o=!!(t.inputSelector||t.formSelector||t.buttonSelector);if(o){s();let l=t.inputSelector?document.querySelector(t.inputSelector):null,d=t.buttonSelector?document.querySelector(t.buttonSelector):null,c=t.formSelector?document.querySelector(t.formSelector):null,u=t.outputSelector?document.querySelector(t.outputSelector):null;u||((u=document.createElement("div")).className="askai-output",e.appendChild(u));let p=document.createElement("div");async function m(){let t=l?String(l.value||"").trim():"";var o=document.querySelectorAll(".smart-askai"),s=document.querySelectorAll(".smart-show-more"),d=document.querySelectorAll(".smart-header");if(o.forEach(e=>{e.remove()}),s.forEach(e=>{e.remove()}),d.forEach(e=>{e.remove()}),!t){p.textContent="Please enter a query.";return}p.classList.remove("hidden-loading");try{let c=await r(t);if("html"===(e.dataset.render||a.render))u.appendChild(text);else{var m=document.createElement("div");m.classList.add("smart-askai"),m.classList.add("initial-state");var f=document.createElement("div");f.classList.add("smart-header"),f.innerHTML='<h4><img style="width:30px;" src="/dist/conmed/images/stars-icon.png"/>AI Overview</h4>';var h=document.createElement("div"),y=document.createElement("div"),g=document.createElement("h5");g.textContent="Related Content",y.appendChild(g),y.classList.add("smart-grid-container"),requestAnimationFrame(n),h.innerHTML=c.answer,h.querySelectorAll("li").forEach(e=>{e.querySelectorAll("p").forEach(e=>{let t=document.createElement("span");t.innerHTML=e.innerHTML,e.replaceWith(t)})});var v=document.createElement("div");v.classList.add("smart-grid-row");var b=document.createElement("div");b.classList.add("smart-grid-item");var S=document.createElement("div");S.classList.add("smart-grid-item");var $=document.createElement("div");$.classList.add("smart-grid-item"),b.innerHTML=c.itemOne.description+" <a target='_blank' href='"+c.itemOne.url+"'></a>",S.innerHTML=c.itemTwo.description+" <a target='_blank' href='"+c.itemTwo.url+"'>Go</a>",$.innerHTML=c.itemThree.description+" <a target='_blank' href='"+c.itemThree.url+"'>Go</a>",v.appendChild(b),v.appendChild(S),v.appendChild($),y.appendChild(v),m.appendChild(h),m.appendChild(y),u.prepend(m),u.prepend(f);var k=document.createElement("button");k.classList.add("smart-show-more"),k.innerText="Show More",k.addEventListener("click",i),m.after(k),setTimeout(()=>{m.classList.remove("initial-state"),m.classList.add("final-state")},0)}p.classList.add("hidden-loading")}catch(x){p.textContent="Error: "+(x&&x.message?x.message:String(x))}}p.id="loadingSpinner",p.className="hidden-loading",p.innerHTML='<span>Generating...</span><div class="spinner"></div>',u.prepend(p),c&&c.addEventListener("submit",function(e){let r=l?String(l.value||"").trim():"";if(!t.preventDefault&&t.storageKey&&r)try{sessionStorage.setItem(t.storageKey,r)}catch{}t.preventDefault&&(e.preventDefault(),m())}),d&&d.addEventListener("click",function(e){let r=l?String(l.value||"").trim():"";if(!t.preventDefault&&t.storageKey&&r)try{sessionStorage.setItem(t.storageKey,r)}catch{}t.preventDefault&&(e.preventDefault(),m())});let f=function(){try{return new URLSearchParams(location.search).get(t.queryParam)}catch{return null}}(),h=t.storageKey?function(){try{return sessionStorage.getItem(t.storageKey)}catch{return null}}():null,y=f||h||"";if(l&&y&&(l.value=y),h&&t.storageKey)try{sessionStorage.removeItem(t.storageKey)}catch{}t.autoSubmit&&(y||l&&l.value.trim())&&m();return}async function g(){let e=input.value.trim();if(!e){status.textContent="Please enter a question.";return}btn.disabled=!0,status.textContent="Thinkingâ€¦";try{let t=await r(e);output.innerHTML=t,status.textContent=""}catch(a){status.textContent="Error: "+(a&&a.message?a.message:String(a))}finally{btn.disabled=!1}}btn.addEventListener("click",g),input.addEventListener("keydown",e=>{(e.metaKey||e.ctrlKey)&&"Enter"===e.key&&(e.preventDefault(),g())})}function d(){s();Array.from(document.querySelectorAll("[data-askai]")).forEach(l)}"loading"===document.readyState?document.addEventListener("DOMContentLoaded",d):d()}();
+  `;
+
+    function ensureStyles() {
+        if ($('#askai-widget-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'askai-widget-styles';
+        style.textContent = CSS;
+        document.head.appendChild(style);
+    }
+
+    function mountWidget(host) {
+        // opts for individual div
+        const opts = {
+            queryParam: host.dataset.queryParam || globalDefaults.queryParam,
+            storageKey: host.dataset.storageKey || globalDefaults.storageKey,
+            autoSubmit: (host.dataset.autoSubmit || (globalDefaults.autoSubmit ? 'true' : 'false')) === 'true',
+            inputSelector: host.dataset.inputSelector || globalDefaults.inputSelector,
+            buttonSelector: host.dataset.buttonSelector || globalDefaults.buttonSelector,
+            formSelector: host.dataset.formSelector || globalDefaults.formSelector,
+            outputSelector: host.dataset.outputSelector || globalDefaults.outputSelector,
+            buttonText: host.dataset.buttonText || globalDefaults.buttonText,
+            preventDefault: (host.dataset.preventDefault || (globalDefaults.preventDefault ? 'true' : 'false')) === 'true',
+            apiKey: host.dataset.apiKey || globalDefaults.apiKey
+        };
+
+        const root = opts.shadow ? host.attachShadow({ mode: 'open' }) : host;
+
+        async function callApi(query) {
+            const payload = {
+                query,
+                format: 'html',
+                conversationId: opts.conversationId,
+                apiKey: opts.apiKey
+            };
+
+            const res = await fetch("https://api.ai12z.net/bot/askai", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${payload.apiKey}`,
+                },
+                body: JSON.stringify(payload),
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error((data && (data.error || data.message)) || res.statusText || 'Request failed');
+
+            let text = '';
+            if (typeof data === 'string') text = data;
+            else if (data.answer) text = data.answer;
+            else if (data.content) text = data.content;
+            else if (data.output) text = data.output;
+            else if (data.result) text = data.result;
+            else text = JSON.stringify(data, null, 2);
+
+            var context = data.context;
+            var returnObj = {
+                answer: data.answer,
+                itemOne: context[0].metadata,
+                itemTwo: context[2].metadata,
+                itemThree: context[4].metadata
+            }
+            return returnObj;
+        }
+
+        // Hook into existing form/button/input on page
+        const attachMode = !!(opts.inputSelector || opts.formSelector || opts.buttonSelector);
+        if (attachMode) {
+            ensureStyles();
+            const inputEl = opts.inputSelector ? document.querySelector(opts.inputSelector) : null;
+            const buttonEl = opts.buttonSelector ? document.querySelector(opts.buttonSelector) : null;
+            const formEl = opts.formSelector ? document.querySelector(opts.formSelector) : null;
+            let outputEl = opts.outputSelector ? document.querySelector(opts.outputSelector) : null;
+
+            if (!outputEl) {
+                // Fallback output area appended to host
+                outputEl = document.createElement('div');
+                outputEl.className = 'askai-output';
+                host.appendChild(outputEl);
+            }
+            const statusEl = document.createElement('div');
+            statusEl.id = 'loadingSpinner';
+            statusEl.className = 'hidden-loading';
+            statusEl.innerHTML = '<span>Generating...</span><div class="spinner"></div>';
+            outputEl.prepend(statusEl);
+
+            async function sendFromExisting() {
+                const query = inputEl ? String(inputEl.value || '').trim() : '';
+				
+				var askAi = document.querySelectorAll('.smart-askai');
+				var showAi = document.querySelectorAll('.smart-show-more');
+				var headerAi = document.querySelectorAll('.smart-header');
+				
+				 askAi.forEach(element => {
+					element.remove();
+				});
+				
+				showAi.forEach(element => {
+					element.remove();
+				});
+				
+				headerAi.forEach(element => {
+					element.remove();
+				});
+				
+                if (!query) { statusEl.textContent = 'Please enter a query.'; return; }
+                statusEl.classList.remove('hidden-loading');
+                try {
+                    const itemObj = await callApi(query);
+                    if ((host.dataset.render || globalDefaults.render) === 'html') {
+                        outputEl.appendChild(text);
+                    } else {
+                        var outputText = document.createElement('div');
+                        outputText.classList.add('smart-askai');
+                        outputText.classList.add('initial-state');
+
+                        var headerTitle = document.createElement('div');
+						headerTitle.classList.add('smart-header');
+                        headerTitle.innerHTML = '<h4><img style="width:30px;" src="/dist/conmed/images/stars-icon.png"/>AI Overview</h4>';
+
+                        var answerText = document.createElement('div');
+                        var related = document.createElement('div');
+                        var relatedHeader = document.createElement('h5');
+                        relatedHeader.textContent = 'Related Content';
+                        related.appendChild(relatedHeader);
+
+                        related.classList.add('smart-grid-container');
+                        requestAnimationFrame(applySurfaceColors);
+
+                        answerText.innerHTML = itemObj.answer;
+						
+						// clean up formatting
+						answerText.querySelectorAll('li').forEach(el => {
+							el.querySelectorAll('p').forEach(p => {
+								const spanEl = document.createElement('span');
+								spanEl.innerHTML = p.innerHTML;
+								p.replaceWith(spanEl);
+							});
+						});
+
+                        var row = document.createElement('div');
+                        row.classList.add('smart-grid-row');
+
+                        var colOne = document.createElement('div')
+                        colOne.classList.add('smart-grid-item');
+                        var colTwo = document.createElement('div')
+                        colTwo.classList.add('smart-grid-item');
+                        var colThree = document.createElement('div')
+                        colThree.classList.add('smart-grid-item');
+
+                        colOne.innerHTML = itemObj.itemOne.description + ' <a target=\'_blank\' href=\'' + itemObj.itemOne.url + '\'></a>';
+                        colTwo.innerHTML = itemObj.itemTwo.description + ' <a target=\'_blank\' href=\'' + itemObj.itemTwo.url + '\'>Go</a>';
+                        colThree.innerHTML = itemObj.itemThree.description + ' <a target=\'_blank\' href=\'' + itemObj.itemThree.url + '\'>Go</a>';
+
+                        row.appendChild(colOne);
+                        row.appendChild(colTwo);
+                        row.appendChild(colThree);
+
+                        related.appendChild(row);
+
+                        outputText.appendChild(answerText);
+                        outputText.appendChild(related);
+                        outputEl.prepend(outputText);
+                        outputEl.prepend(headerTitle);
+
+                        var showMore = document.createElement('button');
+                        showMore.classList.add('smart-show-more');
+                        showMore.innerText = 'Show More';
+                        showMore.addEventListener('click', showMoreText);
+                        outputText.after(showMore);
+
+
+                        setTimeout(() => {
+                            outputText.classList.remove('initial-state');
+                            outputText.classList.add('final-state');
+                        }, 0);
+                    }
+                    statusEl.classList.add('hidden-loading');
+                } catch (err) {
+                    statusEl.textContent = 'Error: ' + (err && err.message ? err.message : String(err));
+                }
+            }
+
+            if (formEl) {
+                formEl.addEventListener('submit', function (e) {
+                    const qVal = inputEl ? String(inputEl.value || '').trim() : '';
+                    // If we're navigating away (preventDefault=false) and storageKey is set, stash query for next page
+                    if (!opts.preventDefault && opts.storageKey && qVal) {
+                        try { sessionStorage.setItem(opts.storageKey, qVal); } catch { }
+                    }
+                    if (opts.preventDefault) {
+                        e.preventDefault();
+                        sendFromExisting();
+                    }
+                });
+            }
+            if (buttonEl) {
+                buttonEl.addEventListener('click', function (e) {
+                    const qVal = inputEl ? String(inputEl.value || '').trim() : '';
+                    if (!opts.preventDefault && opts.storageKey && qVal) {
+                        try { sessionStorage.setItem(opts.storageKey, qVal); } catch { }
+                    }
+                    if (opts.preventDefault) {
+                        e.preventDefault();
+                        sendFromExisting();
+                    }
+                });
+            }
+
+            // On landing page (after redirect), auto-read query from URL or sessionStorage
+            const urlQ = (function () { try { return new URLSearchParams(location.search).get(opts.queryParam); } catch { return null; } })();
+            const stashedQ = (opts.storageKey ? (function () { try { return sessionStorage.getItem(opts.storageKey); } catch { return null; } })() : null);
+            const initialQ = urlQ || stashedQ || '';
+            if (inputEl && initialQ) { inputEl.value = initialQ; }
+            if (stashedQ && opts.storageKey) { try { sessionStorage.removeItem(opts.storageKey); } catch { } }
+
+            if (opts.autoSubmit && (initialQ || (inputEl && inputEl.value.trim()))) {
+                sendFromExisting();
+            }
+
+            return;
+        }
+
+        async function send() {
+            const query = input.value.trim();
+            if (!query) { status.textContent = 'Please enter a question.'; return; }
+            btn.disabled = true;
+            status.textContent = 'Thinking…';
+            try {
+                const text = await callApi(query);
+                output.innerHTML = text;
+                status.textContent = '';
+            } catch (err) {
+                status.textContent = 'Error: ' + (err && err.message ? err.message : String(err));
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        btn.addEventListener('click', send);
+        input.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+                e.preventDefault();
+                send();
+            }
+        });
+    }
+
+    function init() {
+        ensureStyles();
+        $all('[data-askai]').forEach(mountWidget);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
