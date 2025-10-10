@@ -60,11 +60,12 @@
     }
 
     loadIconLibrary('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css');
+	loadIconLibrary('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css');
 
     // Stlying
     const CSS = `
     .smart-askai{
-        --clip: 200px;
+        --clip: 100px;
         --blur-height: 215px;
         --fade-depth: 56px;
     }
@@ -93,13 +94,51 @@
         -webkit-mask-image:linear-gradient(to top, black, transparent);
         background:var(--surface-color, inherit);
     }
+	.smart-header{
+		margin-top:20px;
+	}
+	.ai-overview-icon{
+		margin-right: 8px;
+		color: #1aa79c;
+		font-size: 20px;
+	}
+	.ai-overview-icon > span {
+		font-style:normal;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #3c4043;
+	}
     .smart-grid-item{
-        margin-bottom:20px;
-        background-color: #e5edff;
-        border-radius: 10px;
-        font-size: 16px;
-        padding: 10px;
+        background: rgba(26, 167, 156, .1);
+		border: 1px solid rgba
+		#1aa79c33
+		(26, 167, 156, .2);
+    border-radius: 20px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    transition: all .2s ease;
+    cursor: pointer;
     }
+	.smart-grid-item:hover{
+		background: rgba(26, 167, 156, .15);
+    transform: translateY(-1px);
+	}
+	.smart-show-more-container{
+		text-align:center !important;
+	}
+	.smart-show-more {
+		color: #1aa79c;
+		border-color: #1aa79c;
+		background-color: #ffffff;
+		border: solid 2px;
+	}
+	.smart-show-more:hover {
+		background-color: #1aa79c !important;
+		border-color: #1aa79c !important;
+		color: white !important;
+	}
 
     .hidden-loading {
   display: none !important;
@@ -278,9 +317,11 @@
 
                         var headerTitle = document.createElement('div');
 						headerTitle.classList.add('smart-header');
-                        headerTitle.innerHTML = '<h4><img style="width:30px;" src="/dist/conmed/images/stars-icon.png"/>AI Overview</h4>';
+                        headerTitle.innerHTML = '<i class=\'bi bi-lightbulb-fill ai-overview-icon\'><span>AI Overview</span>';
 
                         var answerText = document.createElement('div');
+						answerText.classList.add('smart-answer');
+						
                         var related = document.createElement('div');
                         var relatedHeader = document.createElement('h5');
                         relatedHeader.textContent = 'Related Content';
@@ -310,9 +351,9 @@
                         var colThree = document.createElement('div')
                         colThree.classList.add('smart-grid-item');
 
-                        colOne.innerHTML = itemObj.itemOne.description + ' <a target=\'_blank\' href=\'' + itemObj.itemOne.url + '\'></a>';
-                        colTwo.innerHTML = itemObj.itemTwo.description + ' <a target=\'_blank\' href=\'' + itemObj.itemTwo.url + '\'>Go</a>';
-                        colThree.innerHTML = itemObj.itemThree.description + ' <a target=\'_blank\' href=\'' + itemObj.itemThree.url + '\'>Go</a>';
+                        colOne.innerHTML = '<a target=\'_blank\' href=\'' + itemObj.itemOne.url + '\'>' + itemObj.itemOne.title + '</a><br>' + itemObj.itemOne.description;
+						colTwo.innerHTML = '<a target=\'_blank\' href=\'' + itemObj.itemTwo.url + '\'>' + itemObj.itemTwo.title + '</a><br>' + itemObj.itemTwo.description;
+                        colThree.innerHTML = '<a target=\'_blank\' href=\'' + itemObj.itemThree.url + '\'>' + itemObj.itemThree.title + '</a><br>' + itemObj.itemThree.description;
 
                         row.appendChild(colOne);
                         row.appendChild(colTwo);
@@ -325,11 +366,15 @@
                         outputEl.prepend(outputText);
                         outputEl.prepend(headerTitle);
 
+						var showMoreContainer = document.createElement('div');
+						showMoreContainer.classList.add('smart-show-more-container');
+						outputText.after(showMoreContainer);
+						
                         var showMore = document.createElement('button');
                         showMore.classList.add('smart-show-more');
                         showMore.innerText = 'Show More';
                         showMore.addEventListener('click', showMoreText);
-                        outputText.after(showMore);
+                        showMoreContainer.appendChild(showMore);
 
 
                         setTimeout(() => {
