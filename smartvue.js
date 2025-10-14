@@ -421,7 +421,7 @@
             if (inputEl && initialQ) { inputEl.value = initialQ; }
             if (stashedQ && opts.storageKey) { try { sessionStorage.removeItem(opts.storageKey); } catch { } }
 
-            if (opts.autoSubmit && (initialQ || (inputEl && inputEl.value.trim()))) {
+            if ((initialQ || (inputEl && inputEl.value.trim()))) {
                 sendFromExisting();
             }
 
