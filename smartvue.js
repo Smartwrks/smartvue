@@ -221,6 +221,7 @@
             formSelector: host.dataset.formSelector || globalDefaults.formSelector,
             outputSelector: host.dataset.outputSelector || globalDefaults.outputSelector,
             buttonText: host.dataset.buttonText || globalDefaults.buttonText,
+			relatedItems: (host.dataset.relatedItems || (globalDefaults.relatedItems ? 'true' : 'false')) === 'true',
             preventDefault: (host.dataset.preventDefault || (globalDefaults.preventDefault ? 'true' : 'false')) === 'true',
             apiKey: host.dataset.apiKey || globalDefaults.apiKey
         };
@@ -322,12 +323,6 @@
                         var answerText = document.createElement('div');
 						answerText.classList.add('smart-answer');
 						
-                        var related = document.createElement('div');
-                        var relatedHeader = document.createElement('h5');
-                        relatedHeader.textContent = 'Related Content';
-                        related.appendChild(relatedHeader);
-
-                        related.classList.add('smart-grid-container');
                         requestAnimationFrame(applySurfaceColors);
 
                         answerText.innerHTML = itemObj.answer;
@@ -340,29 +335,42 @@
 								p.replaceWith(spanEl);
 							});
 						});
+						
+						if (opts.relatedItems) {
+							var related = document.createElement('div');
+							var relatedHeader = document.createElement('h5');
+							relatedHeader.textContent = 'Related Content';
+							related.appendChild(relatedHeader);
 
-                        var row = document.createElement('div');
-                        row.classList.add('smart-grid-row');
+							related.classList.add('smart-grid-container');
 
-                        var colOne = document.createElement('div')
-                        colOne.classList.add('smart-grid-item');
-                        var colTwo = document.createElement('div')
-                        colTwo.classList.add('smart-grid-item');
-                        var colThree = document.createElement('div')
-                        colThree.classList.add('smart-grid-item');
+							var row = document.createElement('div');
+							row.classList.add('smart-grid-row');
 
-                        colOne.innerHTML = '<a target=\'_blank\' href=\'' + itemObj.itemOne.url + '\'>' + itemObj.itemOne.title + '</a><br>' + itemObj.itemOne.description;
-						colTwo.innerHTML = '<a target=\'_blank\' href=\'' + itemObj.itemTwo.url + '\'>' + itemObj.itemTwo.title + '</a><br>' + itemObj.itemTwo.description;
-                        colThree.innerHTML = '<a target=\'_blank\' href=\'' + itemObj.itemThree.url + '\'>' + itemObj.itemThree.title + '</a><br>' + itemObj.itemThree.description;
+							var colOne = document.createElement('div')
+							colOne.classList.add('smart-grid-item');
+							var colTwo = document.createElement('div')
+							colTwo.classList.add('smart-grid-item');
+							var colThree = document.createElement('div')
+							colThree.classList.add('smart-grid-item');
 
-                        row.appendChild(colOne);
-                        row.appendChild(colTwo);
-                        row.appendChild(colThree);
+							colOne.innerHTML = '<a target=\'_blank\' href=\'' + itemObj.itemOne.url + '\'>' + itemObj.itemOne.title + '</a><br>' + itemObj.itemOne.description;
+							colTwo.innerHTML = '<a target=\'_blank\' href=\'' + itemObj.itemTwo.url + '\'>' + itemObj.itemTwo.title + '</a><br>' + itemObj.itemTwo.description;
+							colThree.innerHTML = '<a target=\'_blank\' href=\'' + itemObj.itemThree.url + '\'>' + itemObj.itemThree.title + '</a><br>' + itemObj.itemThree.description;
 
-                        related.appendChild(row);
+							row.appendChild(colOne);
+							row.appendChild(colTwo);
+							row.appendChild(colThree);
+
+							related.appendChild(row);						
+						}
 
                         outputText.appendChild(answerText);
-                        outputText.appendChild(related);
+						
+						if (opts.relatedItems) {
+							outputText.appendChild(related);
+						}
+						
                         outputEl.prepend(outputText);
                         outputEl.prepend(headerTitle);
 
