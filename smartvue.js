@@ -100,13 +100,13 @@
 	.ai-overview-icon{
 		margin-right: 8px;
 		color: #1aa79c;
-		font-size: 20px;
+		font-size: 1.25rem;
 	}
 	.ai-overview-icon > span {
 		font-style:normal;
     align-items: center;
     margin-bottom: 16px;
-    font-size: 16px;
+    font-size: 1.25rem;
     font-weight: bold;
     color: #3c4043;
 	}
