@@ -268,12 +268,21 @@
             else text = JSON.stringify(data, null, 2);
 
             var context = data.context;
-            var returnObj = {
-                answer: data.answer,
-                itemOne: context[0].metadata,
-                itemTwo: context[2].metadata,
-                itemThree: context[4].metadata
-            }
+			var returnObj = {};
+			
+			if (context && context.length >= 5) {
+				returnObj = {
+					answer: data.answer,
+					itemOne: context[0].metadata,
+					itemTwo: context[2].metadata,
+					itemThree: context[4].metadata
+				}
+			}
+			else {
+				returnObj = {
+					answer: data.answer
+				}
+			}
             return returnObj;
         }
 
@@ -366,9 +375,15 @@
 							var colThree = document.createElement('div')
 							colThree.classList.add('smart-grid-item');
 
-							colOne.innerHTML = '<a target=\'_blank\' href=\'' + itemObj.itemOne.url + '\'>' + itemObj.itemOne.title + '</a><br>' + itemObj.itemOne.description;
-							colTwo.innerHTML = '<a target=\'_blank\' href=\'' + itemObj.itemTwo.url + '\'>' + itemObj.itemTwo.title + '</a><br>' + itemObj.itemTwo.description;
-							colThree.innerHTML = '<a target=\'_blank\' href=\'' + itemObj.itemThree.url + '\'>' + itemObj.itemThree.title + '</a><br>' + itemObj.itemThree.description;
+							if (itemObj.itemOne) {
+								colOne.innerHTML = '<a target=\'_blank\' href=\'' + itemObj.itemOne.url + '\'>' + itemObj.itemOne.title + '</a><br>' + itemObj.itemOne.description;
+							}
+							if (itemObj.itemTwo) {
+								colTwo.innerHTML = '<a target=\'_blank\' href=\'' + itemObj.itemTwo.url + '\'>' + itemObj.itemTwo.title + '</a><br>' + itemObj.itemTwo.description;
+							}						
+							if (itemObj.itemThree) {
+								colThree.innerHTML = '<a target=\'_blank\' href=\'' + itemObj.itemThree.url + '\'>' + itemObj.itemThree.title + '</a><br>' + itemObj.itemThree.description;
+							}						
 
 							row.appendChild(colOne);
 							row.appendChild(colTwo);
