@@ -412,7 +412,7 @@
 
                         outputText.appendChild(answerText);
 						
-						if (opts.relatedItems) {
+						if (opts.relatedItems && itemObj.related) {
 							outputText.appendChild(related);
 						}
 						
