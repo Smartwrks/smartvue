@@ -92,7 +92,11 @@
         overflow:hidden;
         transition:max-height 250ms ease;
     }
-
+	
+	.smart-askai.no-related{
+		grid-template-columns: none;
+	}
+	
     .smart-askai::after{
         content:"";
         position:absolute;
@@ -271,16 +275,25 @@
 			var returnObj = {};
 			
 			if (context && context.length >= 5) {
+				var related = true;
+				
+				// Logic to check if AI responds with i dont know
+				if (data.answer.toLowerCase().includes('i don\'t')) {
+					related = false;
+				}
+				
 				returnObj = {
 					answer: data.answer,
 					itemOne: context[0].metadata,
 					itemTwo: context[2].metadata,
-					itemThree: context[4].metadata
+					itemThree: context[4].metadata,
+					related: related
 				}
 			}
 			else {
 				returnObj = {
-					answer: data.answer
+					answer: data.answer,
+					related: false
 				}
 			}
             return returnObj;
@@ -336,6 +349,11 @@
                         var outputText = document.createElement('div');
                         outputText.classList.add('smart-askai');
                         outputText.classList.add('initial-state');
+						
+						// Full width if no related items
+						if (!opts.relatedItems || !itemObj.related) {
+							outputText.classList.add('no-related');
+						}
 
                         var headerTitle = document.createElement('div');
 						headerTitle.classList.add('smart-header');
@@ -357,7 +375,7 @@
 							});
 						});
 						
-						if (opts.relatedItems) {
+						if (opts.relatedItems && itemObj.related) {
 							var related = document.createElement('div');
 							var relatedHeader = document.createElement('h5');
 							relatedHeader.textContent = 'Related Content';
