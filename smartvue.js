@@ -51,6 +51,18 @@
         var showMore = document.querySelectorAll('.smart-show-more');
         showMore[0].style.display = 'none';
     }
+	
+	function isSearchResultsPage() {
+		// Check URL for search patterns
+		const url = window.location.href;
+		const searchPatterns = [
+			'/s/search',           // Weebly search
+			'/search',             // Generic search
+			'search.html',         // Static search page
+		];
+		
+		return searchPatterns.some(pattern => url.includes(pattern));
+	}
 
     function loadIconLibrary(cdnUrl) {
         const linkElement = document.createElement('link');
@@ -409,7 +421,7 @@
                     }
                 });
             }
-            if (buttonEl) {
+            else if (buttonEl) {
                 buttonEl.addEventListener('click', function (e) {
                     const qVal = inputEl ? String(inputEl.value || '').trim() : '';
                     if (!opts.preventDefault && opts.storageKey && qVal) {
@@ -421,6 +433,20 @@
                     }
                 });
             }
+			else {
+				const urlParams = new URLSearchParams(window.location.search);
+				const searchQuery = urlParams.get('q') || urlParams.get('query') || urlParams.get('search');
+				
+				if (isSearchResultsPage() && searchQuery) {
+					if (inputEl) {
+						inputEl.value = searchQuery;
+					}
+					// Trigger after a small delay to ensure page is ready
+					setTimeout(() => {
+						sendFromExisting();
+					}, 100);
+				}
+			}
 
             // On landing page (after redirect), auto-read query from URL or sessionStorage
             const urlQ = (function () { try { return new URLSearchParams(location.search).get(opts.queryParam); } catch { return null; } })();
