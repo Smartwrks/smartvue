@@ -533,13 +533,13 @@
             }
         }
 
-        btn.addEventListener('click', send);
-        input.addEventListener('keydown', (e) => {
-            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-                e.preventDefault();
-                send();
-            }
-        });
+        // btn.addEventListener('click', send);
+        // input.addEventListener('keydown', (e) => {
+            // if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+                // e.preventDefault();
+                // send();
+            // }
+        // });
     }
 
     function init() {
