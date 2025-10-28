@@ -318,7 +318,7 @@
         }
 
         // Hook into existing form/button/input on page
-        const attachMode = !!(opts.inputSelector || opts.formSelector || opts.buttonSelector);
+        const attachMode = true;
         if (attachMode) {
             ensureStyles();
             const inputEl = opts.inputSelector ? (function() {
