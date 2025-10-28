@@ -321,7 +321,10 @@
         const attachMode = !!(opts.inputSelector || opts.formSelector || opts.buttonSelector);
         if (attachMode) {
             ensureStyles();
-            const inputEl = opts.inputSelector ? document.querySelector(opts.inputSelector) : document.querySelector('input[placeholder="Search"]') ||
+            const inputEl = opts.inputSelector ? (function() {
+        try { return document.querySelector(opts.inputSelector); } 
+        catch(e) { return null; }
+      })() : document.querySelector('input[placeholder="Search"]') ||
       document.querySelector('input[aria-label="Search"]');
             const buttonEl = opts.buttonSelector ? document.querySelector(opts.buttonSelector) : null;
             const formEl = opts.formSelector ? document.querySelector(opts.formSelector) : null;
