@@ -270,6 +270,24 @@
             else if (data.output) text = data.output;
             else if (data.result) text = data.result;
             else text = JSON.stringify(data, null, 2);
+			
+			// // Vector search
+			// const vectorPayload = {
+				// query,
+				// apiKey: opts.apiKey,
+				// numDocs: 10
+			// }
+			
+			// const resV = await fetch("https://api.ai12z.net/bot/search", {
+				// method: 'POST',
+				// headers: {
+					// 'Content-Type': 'application/json'
+				// },
+				// body: JSON.stringify(vectorPayload),
+			// });
+			
+			// const vectorData = await resV.json().catch(() => ({}));
+			// console.log(vectorData);
 
             var context = data.context;
 			var returnObj = {};
@@ -303,7 +321,8 @@
         const attachMode = !!(opts.inputSelector || opts.formSelector || opts.buttonSelector);
         if (attachMode) {
             ensureStyles();
-            const inputEl = opts.inputSelector ? document.querySelector(opts.inputSelector) : null;
+            const inputEl = opts.inputSelector ? document.querySelector(opts.inputSelector) : document.querySelector('input[placeholder="Search"]') ||
+      document.querySelector('input[aria-label="Search"]');
             const buttonEl = opts.buttonSelector ? document.querySelector(opts.buttonSelector) : null;
             const formEl = opts.formSelector ? document.querySelector(opts.formSelector) : null;
             let outputEl = opts.outputSelector ? document.querySelector(opts.outputSelector) : null;
